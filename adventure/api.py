@@ -19,7 +19,7 @@ class RoomSerializers(serializers.HyperlinkedModelSerializer):
 
 class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializers
-    queryset = Room.objects.none()
+    queryset = Room.objects.all()
 
 class PlayerSerializers(serializers.HyperlinkedModelSerializer):
     class Meta:
