@@ -4,7 +4,7 @@ from django.conf.urls import include
 from rest_framework import routers
 from rest_framework.authtoken import views
 from adventure.api import PlayerViewSet, RoomViewSet
-from . import api
+
 
 
 # from adventure.api import move
