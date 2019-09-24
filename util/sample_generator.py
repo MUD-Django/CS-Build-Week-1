@@ -73,6 +73,11 @@ class World:
             elif direction < 0 and x > 0:
                 room_direction = "w"
                 x -= 1
+            elif direction < 0 and y < 0:
+                room_direction = "s"
+                y -= 1
+                direction *= -1
+
             else:
                 # If we hit a wall, turn north and reverse direction
                 room_direction = "n"
@@ -152,9 +157,9 @@ class World:
 
 
 w = World()
-num_rooms = 44
-width = 8
-height = 7
+num_rooms = 100
+width = 10
+height = 10
 w.generate_rooms(width, height, num_rooms)
 w.print_rooms()
 

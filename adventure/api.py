@@ -7,9 +7,35 @@ from django.contrib.auth.models import User
 from .models import *
 from rest_framework.decorators import api_view
 import json
-
+from rest_framework import serializers, viewsets
+#sdf
 # instantiate pusher
 # pusher = Pusher(app_id=config('PUSHER_APP_ID'), key=config('PUSHER_KEY'), secret=config('PUSHER_SECRET'), cluster=config('PUSHER_CLUSTER'))
+
+class RoomSerializers(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Room
+        fields = ('id', 'title', 'description', 'n_to', 's_to', 'e_to', 'w_to')
+
+class RoomViewSet(viewsets.ModelViewSet):
+    serializer_class = RoomSerializers
+    queryset = Room.objects.none()
+
+class PlayerSerializers(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Player
+        fields = ('currentRoom',)
+    
+class PlayerViewSet(viewsets.ModelViewSet):
+    serializer_class = PlayerSerializers
+    queryset = Player.objects.none()
+  
+    def get_queryset(self):
+        logged_in_user = self.request.user
+        if logged_in_user.is_anonymous:
+            return Player.objects.none()
+        else:
+            return Player.objects.filter(user=logged_in_user)
 
 @csrf_exempt
 @api_view(["GET"])
