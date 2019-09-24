@@ -12,30 +12,39 @@ from rest_framework import serializers, viewsets
 # instantiate pusher
 # pusher = Pusher(app_id=config('PUSHER_APP_ID'), key=config('PUSHER_KEY'), secret=config('PUSHER_SECRET'), cluster=config('PUSHER_CLUSTER'))
 
-class RoomSerializers(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Room
-        fields = ('id', 'title', 'description', 'n_to', 's_to', 'e_to', 'w_to')
+# class RoomSerializers(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Room
+#         fields = ('id', 'title', 'description', 'n_to', 's_to', 'e_to', 'w_to')
 
-class RoomViewSet(viewsets.ModelViewSet):
-    serializer_class = RoomSerializers
-    queryset = Room.objects.all()
+# class RoomViewSet(viewsets.ModelViewSet):
+#     serializer_class = RoomSerializers
+#     queryset = Room.objects.all()
 
-class PlayerSerializers(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Player
-        fields = ('currentRoom',)
+# class PlayerSerializers(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Player
+#         fields = ('currentRoom',)
     
-class PlayerViewSet(viewsets.ModelViewSet):
-    serializer_class = PlayerSerializers
-    queryset = Player.objects.none()
+# class PlayerViewSet(viewsets.ModelViewSet):
+#     serializer_class = PlayerSerializers
+#     queryset = Player.objects.none()
   
-    def get_queryset(self):
-        logged_in_user = self.request.user
-        if logged_in_user.is_anonymous:
-            return Player.objects.none()
-        else:
-            return Player.objects.filter(user=logged_in_user)
+#     def get_queryset(self):
+#         logged_in_user = self.request.user
+#         if logged_in_user.is_anonymous:
+#             return Player.objects.none()
+#         else:
+#             return Player.objects.filter(user=logged_in_user)
+
+@csrf_exempt
+@api_view(["GET"])
+def rooms(request):
+    fetchRooms = [{'title': room.title, 'description': room.description, 'n_to': room.n_to, 's_to': room.s_to, 'e_to': room.e_to, 'w_to': room.w_to}
+    for room in Room.objects.all()]
+    user = request.user
+    player = user.player
+    return JsonResponse(fetchRooms, safe=False)
 
 @csrf_exempt
 @api_view(["GET"])
@@ -57,8 +66,8 @@ def move(request):
     player = request.user.player
     player_id = player.id
     player_uuid = player.uuid
-    data = json.loads(request.body)
-    direction = data['direction']
+    # data = json.loads(request.body)
+    direction = request.data['direction']
     room = player.room()
     nextRoomID = None
     if direction == "n":
