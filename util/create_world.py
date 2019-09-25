@@ -4,8 +4,14 @@ from adventure.models import Player, Room
 
 Room.objects.all().delete()
 
+#add world to models.py
+#make sure room is the sane in models.py
+#import world
+#create new instance of world
+#call generate_rooms on the new instance of world
+
 r_outside = Room(title="Outside Cave Entrance",
-               description="North of you, the cave mount beckons")
+  description="North of you, the cave mount beckons")
 
 r_foyer = Room(title="Foyer", description="""Dim light filters in from the south. Dusty
 passages run north and east.""")
@@ -27,7 +33,7 @@ r_overlook.save()
 r_narrow.save()
 r_treasure.save()
 
-# Link rooms together
+#Link rooms together
 r_outside.connectRooms(r_foyer, "n")
 r_foyer.connectRooms(r_outside, "s")
 
@@ -44,4 +50,8 @@ players=Player.objects.all()
 for p in players:
   p.currentRoom=r_outside.id
   p.save()
+
+
+
+
 
