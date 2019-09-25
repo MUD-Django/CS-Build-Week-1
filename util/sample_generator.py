@@ -5,6 +5,7 @@
 # procedural generation algorithm and use print_rooms()
 # to see the world.
 
+import random 
 
 class Room:
     def __init__(self, id, name, description, x, y):
@@ -73,10 +74,6 @@ class World:
             elif direction < 0 and x > 0:
                 room_direction = "w"
                 x -= 1
-            elif direction < 0 and y < 0:
-                room_direction = "s"
-                y -= 1
-                direction *= -1
 
             else:
                 # If we hit a wall, turn north and reverse direction
@@ -94,9 +91,14 @@ class World:
             # Connect the new room to the previous room
             if previous_room is not None:
                 previous_room.connect_rooms(room, room_direction)
+                room_below = self.grid[y - 1][x]
+                #if room_below and room_below.x % 2 == 0:
+                if room_below and random.randint(1,10) % 2 == 0:
+                    room_below.connect_rooms(room, 'n')
 
             # Update iteration variables
             previous_room = room
+
             room_count += 1
 
 
