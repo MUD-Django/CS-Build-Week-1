@@ -72,8 +72,14 @@ while room_count < num_rooms:
             room_below.connectRooms(room, 'n')
     print("After grid")
     previous_room = room
+    print(f'room count: {room_count} previous room {previous_room}')
     print("Incrementing")
-    room_count += 1 
+    room_count += 1
+    print(f'room count:{room_count}, previous_room: {previous_room}')
+
+if (room_count == 100):
+    previous_room.connectRooms(number_rooms[98], room_direction)
+    print(f'room count:{room_count}, previous_room: {previous_room}') 
 
 players=Player.objects.all()
 for p in players:
