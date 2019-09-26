@@ -24,9 +24,21 @@ class Room:
         self.num_connects=0
 
     def __repr__(self):
+        #if self.e_to is not None:
+        #    return f"({self.x}, {self.y}) -> ({self.e_to.x}, {self.e_to.y})"
+        #return f"({self.x}, {self.y})"
+        # Above commented lines are the reference repr
+        base = "ID:{}".format(self.id)
         if self.e_to is not None:
-            return f"({self.x}, {self.y}) -> ({self.e_to.x}, {self.e_to.y})"
-        return f"({self.x}, {self.y})"
+            base += ",E({},{})".format(self.e_to.x, self.e_to.y)
+        if self.w_to is not None:
+            base += ",W({},{})".format(self.w_to.x, self.w_to.y)
+        if self.n_to is not None:
+            base += ",N({},{})".format(self.n_to.x, self.n_to.y)
+        if self.s_to is not None:
+            base += ",S({},{})".format(self.s_to.x, self.s_to.y)
+        base += " "
+        return base
 
     def connect_rooms(self, connecting_room, direction):
         '''
@@ -38,7 +50,37 @@ class Room:
         setattr(connecting_room, f"{reverse_dir}_to", self)
         self.num_connects += 1
         connecting_room.num_connects += 1
-        print("room id:{} has {} connections".format(self.id,self.num_connects))
+        print("Room id {}, connection: {}".format(self.id, connecting_room))
+        print("room id:{} now has {} connections".format(self.id,self.num_connects))
+
+    # delete a connection in a specific direction
+    # deletes connection for both this and connected room
+    # also decrements number of connections for both
+    def delete_connection(self, direction):
+        '''
+        Delete a connection in a particular direction
+        '''
+        reverse_dirs = {"n": "s", "s": "n", "e": "w", "w": "e"}
+
+        connected_room = self.get_room_in_direction(direction)
+        setattr(self, f"{direction}_to", None)
+        self.num_connects -= 1
+        #print("Room id: {}, deleted connection in direction {}, number of connections: {}".format(self.id, direction, self.num_connects))
+        reverse_dir = reverse_dirs[direction]
+        setattr(connected_room, f"{reverse_dir}_to", None)
+        connected_room.num_connects -= 1
+        #print("Room id: {}, deleted connection in direction {}, number of connections: {}".format(connected_room.id, reverse_dir, connected_room.num_connects))
+
+
+
+    # Prune the connections for one room - 2nd implementation
+    # pick one random direction in which to keep the connection
+    # delete the rest
+    # wont delete connection if room on other side has just one
+    # since this would make room on other side an orphan (no connections)
+    def prune_connections2(self):
+
+
 
     def get_room_in_direction(self, direction):
         '''
@@ -100,7 +142,6 @@ class World:
             # Save the room in the World grid
             self.grid[y][x] = room
 
-            single_connect = random.randint(0,5)%2
             # Connect the new room to the previous room
             if previous_room is not None:
                 # if not single_connect or not room.num_connects:
@@ -110,15 +151,26 @@ class World:
                 if room_below and random.randint(1,10) % 2 == 0:
                     room_below.connect_rooms(room, 'n')
 
+
             # Update iteration variables
             previous_room = room
 
             room_count += 1
             print(f'room count:{room_count}, previous_room: {previous_room}')
 
-        if (room_count == num_rooms):
+        if (room_count == num_rooms-1):
             previous_room.connect_rooms(room, room_direction)
-            print(f'room count:{room_count}, previous_room: {previous_room}')  
+            print(f'room count:{room_count}, previous_room: {previous_room}')            
+
+
+    # Randomly pick rooms from grid
+    # and restrict to just one connection
+    def refine_rooms(self):
+        print("Pruning room connections...")
+        for i in range(0,self.height):
+            for j in range(0,self.width):
+                if random.randint(0,5) == 1:
+                    self.grid[j][i].prune_connections2()
 
 
     def print_rooms(self):
@@ -181,6 +233,9 @@ num_rooms = 100
 width = 10
 height = 10
 w.generate_rooms(width, height, num_rooms)
+w.print_rooms()
+w.refine_rooms()
+print("\n")
 w.print_rooms()
 
 
