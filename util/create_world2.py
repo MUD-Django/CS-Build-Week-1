@@ -59,7 +59,7 @@ while room_count < num_rooms:
     print("After if")
     # gen_title = random.choice(title)
     # gen_description = random.choice(description)
-    room = Room(title=title[room_count], description=f"you are in {title[room_count]}", x=0, y=0)
+    room = Room(title=title[room_count], description=f"you are in {title[room_count]}", x=x, y=y)
     print(f'room title: {room.title}, room description: {room.description}')
     room.save()
     number_rooms.append(room)
