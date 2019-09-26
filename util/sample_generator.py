@@ -21,7 +21,7 @@ class Room:
         self.w_to = None
         self.x = x
         self.y = y
-        self.num_connects=0
+        # self.num_connects=0
 
     def __repr__(self):
         if self.e_to is not None:
@@ -36,9 +36,9 @@ class Room:
         reverse_dir = reverse_dirs[direction]
         setattr(self, f"{direction}_to", connecting_room)
         setattr(connecting_room, f"{reverse_dir}_to", self)
-        self.num_connects += 1
-        connecting_room.num_connects += 1
-        print("room id:{} has {} connections".format(self.id,self.num_connects))
+        # self.num_connects += 1
+        # connecting_room.num_connects += 1
+        # print("room id:{} has {} connections".format(self.id,self.num_connects))
 
     def get_room_in_direction(self, direction):
         '''

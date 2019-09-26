@@ -6,7 +6,9 @@ import random
 Room.objects.all().delete()
 number_rooms = []
 direction = 1
-reverse_dirs = {"n": "s", "s": "n", "e": "w", "w": "e"}
+
+# dirs = {0: 'n', 1: 's', 2: 'e', 3: 'w'}
+# reverse_dirs = {0: "s", 1: "n", 2: "w", 3: "e"}
 width = 0
 height = 0
 size_x = 10
@@ -48,18 +50,24 @@ while room_count < num_rooms:
     print("room_count : {}, num_rooms: {}".format(room_count, num_rooms))    
     if direction > 0 and x < size_x - 1:
         room_direction = "e"
+        # room_direction = dirs[2]
+        # reverse_direction = reverse_dirs[2]
         x += 1
     elif direction < 0 and x > 0:
         room_direction = "w"
+        # room_direction = dirs[3]
+        # reverse_direction = reverse_dirs[3]
         x -= 1
     else:
         room_direction = "n"
+        # room_direction = dirs[0]
+        # reverse_direction = reverse_dirs[0]
         y += 1
         direction *= -1
     print("After if")
     # gen_title = random.choice(title)
     # gen_description = random.choice(description)
-    room = Room(title=title[room_count], description=f"you are in {title[room_count]}", x=0, y=0)
+    room = Room(title=title[room_count], description=f"you are in {title[room_count]}", x=x, y=y)
     print(f'room title: {room.title}, room description: {room.description}')
     room.save()
     number_rooms.append(room)
@@ -67,17 +75,18 @@ while room_count < num_rooms:
     grid[y][x] = room
     if previous_room is not None:
         previous_room.connectRooms(room, room_direction)
+        # room.connectRooms(previous_room, reverse_direction)
         room_below = grid[y - 1][x]
         if room_below and random.randint(1,10) % 2 == 0:
-            room_below.connectRooms(room, 'n')
+            room_below.connectRooms(room, room_direction)
+            # room.connectRooms(room_below, reverse_direction)
     print("After grid")
     previous_room = room
     print(f'room count: {room_count} previous room {previous_room}')
     print("Incrementing")
     room_count += 1
     print(f'room count:{room_count}, previous_room: {previous_room}')
-
-if (room_count == 100):
+if room_count == 100:
     previous_room.connectRooms(number_rooms[98], room_direction)
     print(f'room count:{room_count}, previous_room: {previous_room}') 
 
