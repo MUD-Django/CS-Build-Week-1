@@ -43,7 +43,7 @@ def rooms(request):
     fetchRooms = [{'title': room.title, 'description': room.description, 'n_to': room.n_to, 's_to': room.s_to, 'e_to': room.e_to, 'w_to': room.w_to}
     for room in Room.objects.all()]
     user = request.user
-    player = user.player
+    # player = user.player
     return JsonResponse(fetchRooms, safe=False)
 
 @csrf_exempt
