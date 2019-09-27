@@ -152,7 +152,7 @@ class World:
                 else:
                     str += " "
                 if room is not None:
-                    str += f"{room.id}".zfill(3)
+                    str += f"{room.id}".fill(3)
                 else:
                     str += "   "
                 if room is not None and room.e_to is not None:
